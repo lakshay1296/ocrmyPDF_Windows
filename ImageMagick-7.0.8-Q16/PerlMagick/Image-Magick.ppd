@@ -1,0 +1,8 @@
+<SOFTPKG NAME="Image-Magick" VERSION="7.0.8">
+    <ABSTRACT>ImageMagick PERL Extension</ABSTRACT>
+    <AUTHOR>ImageMagick Studio</AUTHOR>
+    <IMPLEMENTATION>
+        <ARCHITECTURE NAME="MSWin32-x64-multi-thread-5.20" />
+        <CODEBASE HREF="x64\\Image-Magick.zip" />
+    </IMPLEMENTATION>
+</SOFTPKG>
