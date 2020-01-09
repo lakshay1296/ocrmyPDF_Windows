@@ -1,0 +1,6 @@
+-- Leptonica Location --
+
+C:\Program Files (x86)\Tesseract-OCR\liblept-5.dll
+
+-- pikepdf not found --
+installed pikepdf v1.7.0
