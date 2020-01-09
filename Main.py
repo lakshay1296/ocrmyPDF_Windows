@@ -1,76 +1,71 @@
+'''
+    inputFile needs to be an image
+    inputFile format: PDFname_count
+
+    outputFile needs to be pdf
+'''
+
 import os
-import datetime
+import re
 import csv
-import platform
+from PyPDF2 import PdfFileReader, PdfFileWriter, PdfFileMerger
 
-print(platform.architecture())
+# f = open("C:\\Users\lakshay.saini\Desktop\Med Legal\PDF\Listing.csv", "w+", newline="")
+# w = csv.writer(f, delimiter=",")
+# w.writerow(["File Name"])
 
-import ocrmypdf
+''' Enter path of folder containing images '''
 
-ocrmypdf.ocr(input_file="C:\\Users\lakshay.saini\Desktop\Med Legal\PDF\PDF\MW Complete Pain Solutions.pdf",
-             output_file="C:\\Users\lakshay.saini\Desktop\Med Legal\PDF\PDF\MW Complete Pain Solutions_OCR.pdf", force_ocr=True)
+# C:\\Users\lakshay.saini\Desktop\Med Legal\PDF\Images
+path = input("Enter folder path containing images: ")
+try:
 
-#
-# def main():
-#
-#     path = input("Enter the path of directory: ")
-#     count = 0
-#
-#     # f = open("D:\\File_list.csv", "r+")
-#     # reader = csv.DictReader(f)
-#     # lis= []
-#     # for row in reader:
-#     #     lis.append(str(row["Path"]))
-#
-#     os.makedirs(path + "\\OCR", exist_ok="ignore")
-#
-#     for root, dir, files in os.walk(path):
-#         for singFile in files:
-#
-#             if str(singFile).endswith(".pdf"):
-#
-#                     # # if str(singFile) not in lis:
-#                     #     count = count + 1
-#                     #
-#                     #     old_file = singFile
-#                     #     oldest_path = root + "\\" + old_file
-#                     #
-#                     #     if "-" in singFile:
-#                     #         newFile = singFile.split("-")
-#                     #         file_name = newFile[0] + ".pdf"
-#                     #
-#                     #     else:
-#                     #         file_name = singFile
-#                     #
-#                     #     old_path = root + "\\" + singFile
-#                     #     new_path = root + "\\" + file_name
-#                     #     os.rename(old_path,new_path)
-#                     #     print (singFile)
-#                     #     print ("python pypdfocr.py " + new_path)
-#                     #     os.system("python pypdfocr.py " + new_path)
-#                     #     os.rename(new_path,oldest_path)
-#
-#                     # ocrmypdf.ocr(root + "\\" + singFile, root + "\\OCR\\" + singFile)
-#
-#
-#                     print ("File" + str(count) + ":" + " " + singFile + " has been OCR'd")
-#
-#                     # else:
-#                     #     pass
-#
-# if __name__ == '__main__':
-#     lis = []
-#
-#     # Start Time
-#     start_time = datetime.datetime.now()
-#     lis.append(start_time)
-#
-#     # Main Function
-#     main()
-#
-#     # End Time
-#     end_time = datetime.datetime.now()
-#     lis.append(end_time)
-#
-#     print ("Start Time: " + str(lis[0]))
-#     print ("End Time: " + str(lis[1]))
+    os.makedirs(str(path) + "/OCR")
+
+except Exception:
+    pass
+
+import pandas as pd
+df = pd.read_csv("C:\\Users\lakshay.saini\Desktop\Med Legal\PDF\Listing.csv")
+
+''' OCR Code '''
+for root, dir, files in os.walk(path):
+    for jpeg in files:
+        if jpeg.lower().endswith(".jpeg"):
+            inputFile = root + "/" + jpeg
+            outputFile = root + "/" + jpeg.replace(".jpeg", "")
+            os.system('tesseract --psm 6 "' + inputFile + '" "' + outputFile + '" pdf')
+
+''' PDF creation and merging from images. '''
+for i in df.index:
+    fileName = df["File Name"][i]
+    pdf_writer = PdfFileWriter()
+
+    for root, dir, files in os.walk(path):
+        for pdf in files:
+
+            ''' Extracting Parent Name '''
+            matchObj = re.match("(.*)_.*.pdf", pdf, re.I | re.M)
+            if matchObj:
+                file_name = matchObj.group(1)
+                print(file_name)
+            else:
+                file_name = pdf
+            '''------------------------'''
+
+            if pdf.lower().endswith(".pdf") and (file_name == fileName):
+
+                ''' Code for merging PDF '''
+                pdf_reader = PdfFileReader(root + "/" + pdf)
+                for page in range(pdf_reader.getNumPages()):
+                    pdf_writer.addPage(pdf_reader.getPage(page))
+
+        with open(path + "\OCR\\" + fileName + ".pdf", 'wb') as fh:
+                pdf_writer.write(fh)
+        print (fileName + " PDF has been created")
+
+
+# for root, dir, files in os.walk("C:\\Users\lakshay.saini\Desktop\Med Legal\PDF\Images"):
+#     for file in files:
+#         if file.lower().endswith(".jpeg"):
+#             w.writerow([str(file)])
