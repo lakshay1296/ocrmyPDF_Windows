@@ -24,3 +24,61 @@ I had some issues while using ocrmypdf on windows, it didn't worked at all. So, 
 - pip install ocrmypdf
 - pip install pikepdf==1.7.0 (newer versions doesn't seem to work)
 
+## PikePDF Problem
+
+### v1.8.3
+
+The latest version is throwing problem in importing some module. I don't know what exactly. When I navigate the error, it's showing that there's a problem in importing _qpdf.
+Due to this code does not produce any output.
+
+### v1.7.0
+By installing this version we can get rid of the v1.8.3 import error. However, it is also not perfect. When we run the code we get ***AttributeError: 'pikepdf._qpdf.Pdf' object has no attribute 'check'*** error. To solve that add following code in _methods.py present in **"your location\ocrmyPDF_Windows\ocr_env\Lib\site-packages\pikepdf"**.
+
+Add this after **def encryption()** method.
+
+```python
+def check(self):
+        """
+        Check if PDF is well-formed.  Similar to ``qpdf --check``.
+        Returns:
+            list of strings describing errors of warnings in the PDF
+        """
+
+        class DiscardingParser(StreamParser):
+            def __init__(self):  # pylint: disable=useless-super-delegation
+                super().__init__()  # required for C++
+
+            def handle_object(self, obj):
+                pass
+
+            def handle_eof(self):
+                pass
+
+        problems = []
+
+        try:
+            self._decode_all_streams_and_discard()
+        except PdfError as e:
+            problems.append(str(e))
+
+        discarding_parser = DiscardingParser()
+
+        for basic_page in self.pages:
+            page = Page(basic_page)
+            try:
+                page.parse_contents(discarding_parser)
+            except PdfError as e:
+                problems.append(str(e))
+
+        for warning in self.get_warnings():
+            problems.append("WARNING: " + warning)
+
+        return problems
+```
+
+This solves the previously mentioned error. ####This does produce output but also gives one more error####
+
+For now, I can live with "streamparser" error, however, I'm still trying to figure this error out.
+
+## Licensing
+You can use this repository in anyway you need. Kindly make any changes in a different branch.
