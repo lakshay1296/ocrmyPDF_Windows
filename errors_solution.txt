@@ -1,6 +1,19 @@
+-- Installation --
+Install tesseract
+Put all the folder's bin to environment variables
+
 -- Leptonica Location --
 
 C:\Program Files (x86)\Tesseract-OCR\liblept-5.dll
 
 -- pikepdf not found --
 installed pikepdf v1.7.0
+
+-- freeze_support() ERROR --
+Just need to have if __name__ == '__main__' in the Main.py
+
+-- Password encrypted file --
+We can use qpdf to input password for the pdf
+
+-- pikepdf functionality --
+added check() in _methods.py present in pikepdf folder.

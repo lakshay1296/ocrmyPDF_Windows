@@ -1,5 +1,9 @@
 import ocrmypdf
 
-ocrmypdf.ocr(input_file="C:\\Users\lakshay.saini\Desktop\Med Legal\PDF\PDF\image\MW Complete Pain Solutions.pdf",
-             output_file="C:\\Users\lakshay.saini\Desktop\Med Legal\PDF\PDF\image\MW Complete Pain Solutions_ocr.pdf",
+def ocr():
+    ocrmypdf.ocr(input_file="C:\\D_Drive\Software_Developer_Resume_Lakshay.pdf",
+             output_file="C:\\D_Drive\Software_Developer_Resume_Lakshay_ocr.pdf",
              force_ocr=True)
+
+if __name__ == "__main__":
+    ocr()
