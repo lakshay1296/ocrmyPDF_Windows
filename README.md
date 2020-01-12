@@ -76,7 +76,7 @@ def check(self):
         return problems
 ```
 
-This solves the previously mentioned error. ####This does produce output but also gives one more error####
+This solves the previously mentioned error. **This does produce output but also gives one more error**
 
 For now, I can live with "streamparser" error, however, I'm still trying to figure this error out.
 
