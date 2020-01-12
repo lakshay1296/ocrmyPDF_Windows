@@ -16,4 +16,47 @@ Just need to have if __name__ == '__main__' in the Main.py
 We can use qpdf to input password for the pdf
 
 -- pikepdf functionality --
-added check() in _methods.py present in pikepdf folder.
+AttributeError: 'pikepdf._qpdf.Pdf' object has no attribute 'check'
+add following code in _methods.py present in "your location\ocrmyPDF_Windows\ocr_env\Lib\site-packages\pikepdf".
+
+after def encryption(self)
+
+def check(self):
+        """
+        Check if PDF is well-formed.  Similar to ``qpdf --check``.
+        Returns:
+            list of strings describing errors of warnings in the PDF
+        """
+
+        class DiscardingParser(StreamParser):
+            def __init__(self):  # pylint: disable=useless-super-delegation
+                super().__init__()  # required for C++
+
+            def handle_object(self, obj):
+                pass
+
+            def handle_eof(self):
+                pass
+
+        problems = []
+
+        try:
+            self._decode_all_streams_and_discard()
+        except PdfError as e:
+            problems.append(str(e))
+
+        discarding_parser = DiscardingParser()
+
+        for basic_page in self.pages:
+            page = Page(basic_page)
+            try:
+                page.parse_contents(discarding_parser)
+            except PdfError as e:
+                problems.append(str(e))
+
+        for warning in self.get_warnings():
+            problems.append("WARNING: " + warning)
+
+        return problems
+
+# till here
